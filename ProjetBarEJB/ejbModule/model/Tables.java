@@ -1,10 +1,19 @@
 package model;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -47,5 +56,18 @@ public class Tables implements Serializable{
 
 	public void setBooked(boolean isBooked) {
 		this.isBooked = isBooked;
-	}    
+	}
+	
+	@OneToMany(cascade = CascadeType.DETACH)
+	@JoinColumn(name = "orderId")
+    private Set<Order> ordersOfTable = new HashSet<Order>();
+
+	public Set<Order> getOrdersOfTable() {
+		return ordersOfTable;
+	}
+
+	public void setOrdersOfTable(Set<Order> ordersOfTable) {
+		this.ordersOfTable = ordersOfTable;
+	}
+	
 }
