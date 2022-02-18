@@ -8,11 +8,11 @@ import javax.persistence.PersistenceContext;
 import model.Tables;
 
 /**
- * Session Bean implementation class TablemManagerStateless
+ * Session Bean implementation class TableManagerStateless
  */
 @Stateless
 @LocalBean
-public class TablemManagerStateless implements TableManagerStatelessRemote {
+public class TableManagerStateless implements TableManagerStatelessRemote {
 
 	@PersistenceContext
 	EntityManager em;
@@ -20,15 +20,15 @@ public class TablemManagerStateless implements TableManagerStatelessRemote {
     /**
      * Default constructor. 
      */
-    public TablemManagerStateless() {
+    public TableManagerStateless() {
         // TODO Auto-generated constructor stub
     }
 
 	@Override
-	public Tables addTable(Tables table) {
-		em.persist(table);	
+	public Tables addTable(Tables tables) {
+		em.persist(tables);	
 		em.flush();
-		return table;
+		return tables;
 	}
 
 	@Override
@@ -42,9 +42,9 @@ public class TablemManagerStateless implements TableManagerStatelessRemote {
 	}
 
 	@Override
-	public Tables editTable(Tables table) {
-		em.merge(table);
+	public Tables editTable(Tables tables) {
+		em.merge(tables);
 		em.flush();
-		return table;		
+		return tables;		
 	}
 }
