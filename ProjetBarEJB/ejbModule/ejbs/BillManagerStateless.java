@@ -48,4 +48,9 @@ public class BillManagerStateless implements BillManagerStatelessRemote {
 		em.flush();
 		return bill;		
 	}
+
+	@Override
+	public Bill getBillByOrderId(int orderId) {
+		return (Bill)em.createQuery("SELECT b FROM Bills b WHERE orderId=" + orderId + "").getResultList().get(0);
+	}
 }
