@@ -1,0 +1,320 @@
+package clients;
+
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Collection;
+import java.util.Hashtable;
+
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.ColorUIResource;
+import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.SystemColor;
+import java.awt.Toolkit;
+import java.awt.Font;
+import java.awt.Image;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.border.BevelBorder;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import ejbs.*;
+import model.*;
+
+public class InterfaceServeur extends JFrame {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JPanel contentPane;
+	private JTable tableCommandesAssociees;
+	private JTable tableCommandesRestantes;
+
+	private Context context;
+	
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					InterfaceServeur frame = new InterfaceServeur();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public InterfaceServeur() throws IOException {
+		context = connexionServeurWildfly();
+		
+		Color background_color = new Color(219,219,219);
+		Color background_color2 = new Color(240,240,240);
+		Color background_color_foncee = new Color(86,124,127);
+		Color background_color_logo_clair = new Color(80,160,160);
+		Color background_color_logo_clair2 = new Color(128,184,188);
+		Color background_bordure = new Color(32,81,81);
+		Color background_bordure_interieur = new Color(86,124,127);
+		UIManager.put("ScrollBar.thumb", new ColorUIResource(Color.LIGHT_GRAY));
+
+		setTitle("Interface client lourd - Préparation de la commande");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1024, 728);
+		
+		contentPane = new JPanel();
+		JLabel Label_tableSelected = new JLabel("");
+		Label_tableSelected.setFont(new Font("Roboto", Font.PLAIN, 30));
+		Label_tableSelected.setBounds(870, 0, 55, 77);
+		contentPane.add(Label_tableSelected);
+		
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+		
+		JButton buttonTable1 = new JButton("");
+		
+		//************************************************
+		// ATTENTION, FOCUSABLE SUR FALSE !!!!!!!!!!!!!!!!
+		//************************************************
+
+		buttonTable1.setFocusable(false);
+		buttonTable1.setContentAreaFilled(false);
+		buttonTable1.setBorderPainted(false);
+		JButton buttonTable2 = new JButton("");
+		buttonTable2.setFocusable(false);
+		buttonTable2.setBorderPainted(false);
+		buttonTable2.setContentAreaFilled(false);
+		JButton buttonTable3 = new JButton("");
+		buttonTable3.setFocusable(false);
+		buttonTable3.setBorderPainted(false);
+		buttonTable3.setContentAreaFilled(false);
+		
+		
+
+		buttonTable3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Label_tableSelected.setText("3");
+				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_3.png")));
+				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
+				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
+			}
+		});
+		buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
+		buttonTable3.setBounds(123, 507, 112, 89);
+		buttonTable3.setBackground(background_color);
+		buttonTable3.setBorder(null);
+		contentPane.add(buttonTable3);
+		
+		buttonTable2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Label_tableSelected.setText("2");
+				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_2.png")));
+				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
+				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
+			}
+		});
+		buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
+		buttonTable2.setBounds(321, 288, 93, 89);
+		buttonTable2.setBackground(background_color);
+		buttonTable2.setBorder(null);
+		contentPane.add(buttonTable2);
+		
+		buttonTable1.setSelectedIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_1.png")));
+		buttonTable1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Label_tableSelected.setText("1");
+				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_1.png")));
+				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
+				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
+			}
+		});
+		buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
+		buttonTable1.setBounds(142, 114, 93, 89);
+		buttonTable1.setBackground(background_color);
+		buttonTable1.setBorder(null);
+		contentPane.add(buttonTable1);
+		
+		JLabel labelNumTable = new JLabel("N\u00B0 de table selectionn\u00E9e :");
+		labelNumTable.setFont(new Font("Roboto", Font.PLAIN, 25));
+		labelNumTable.setBounds(580, 0, 296, 77);
+		contentPane.add(labelNumTable);
+		
+		JLabel Background_img = new JLabel("");
+		Background_img.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/plan_salle_2.png")));
+		Background_img.setBounds(65, 28, 420, 650);
+		contentPane.add(Background_img);
+		
+		JScrollPane scrollPaneCommandesAssociees = new JScrollPane();
+		scrollPaneCommandesAssociees.setFont(new Font("Roboto", Font.PLAIN, 20));
+		scrollPaneCommandesAssociees.setBounds(539, 100, 420, 160);
+		
+		scrollPaneCommandesAssociees.getVerticalScrollBar().setUI(new BasicScrollBarUI() );
+		scrollPaneCommandesAssociees.getHorizontalScrollBar().setUI(new BasicScrollBarUI());
+		
+		contentPane.add(scrollPaneCommandesAssociees);
+		
+		tableCommandesAssociees = new JTable();
+		tableCommandesAssociees.setFont(new Font("Roboto", Font.PLAIN, 18));
+		tableCommandesAssociees.setRowHeight(tableCommandesAssociees.getRowHeight() + 10);
+		tableCommandesAssociees.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
+		tableCommandesAssociees.setSelectionBackground(SystemColor.controlHighlight);
+
+		tableCommandesAssociees.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"B.Blonde", "3"},
+				{"Vodka Rdbll", "2"},
+				{null, null},
+				{null, null},
+				{null, null},
+				{null, null},
+			},
+			new String[] {
+				"Boisson", "Quantit\u00E9"
+			}
+		));
+		scrollPaneCommandesAssociees.setViewportView(tableCommandesAssociees);
+		
+		JScrollPane scrollPaneCommandesRestantes = new JScrollPane();
+		scrollPaneCommandesRestantes.setFont(new Font("Roboto", Font.PLAIN, 20));
+		scrollPaneCommandesRestantes.setBounds(539, 378, 420, 300);
+		contentPane.add(scrollPaneCommandesRestantes);
+		
+		scrollPaneCommandesRestantes.getVerticalScrollBar().setUI(new BasicScrollBarUI() );
+		scrollPaneCommandesRestantes.getHorizontalScrollBar().setUI(new BasicScrollBarUI());
+
+		
+		
+		tableCommandesRestantes = new JTable();
+		tableCommandesRestantes.setAutoCreateRowSorter(true);
+		tableCommandesRestantes.setRowHeight(tableCommandesRestantes.getRowHeight() + 10);
+		tableCommandesRestantes.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
+		scrollPaneCommandesRestantes.setViewportView(tableCommandesRestantes);
+
+		tableCommandesRestantes.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"B.Blonde", "3", "3"},
+				{"Vodka Rdbll", "2", "3"},
+				{"Cercueil", "4", "2"},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+				{null, null, null},
+			},
+			new String[] {
+				"Boisson", "Quantit\u00E9", "Table"
+			}
+		));
+		tableCommandesRestantes.setSelectionBackground(SystemColor.controlHighlight);
+		tableCommandesRestantes.setFont(new Font("Roboto", Font.PLAIN, 18));
+		
+		JLabel labelCommandesAssociees = new JLabel("Commandes associ\u00E9es");
+		labelCommandesAssociees.setHorizontalAlignment(SwingConstants.CENTER);
+		labelCommandesAssociees.setFont(new Font("Roboto", Font.PLAIN, 20));
+		labelCommandesAssociees.setBounds(585, 75, 340, 14);
+		contentPane.add(labelCommandesAssociees);
+		
+		JLabel labelCommandesRestantes = new JLabel("Commandes restantes");
+		labelCommandesRestantes.setHorizontalAlignment(SwingConstants.CENTER);
+		labelCommandesRestantes.setFont(new Font("Roboto", Font.PLAIN, 20));
+		labelCommandesRestantes.setBounds(589, 353, 340, 14);
+		contentPane.add(labelCommandesRestantes);
+		
+		JButton buttonCommandePrete = new JButton("Commande pr\u00EAte ");
+		buttonCommandePrete.setBorderPainted(false);
+		buttonCommandePrete.setBorder(new EmptyBorder(5, 5, 5, 5));
+		buttonCommandePrete.setBackground(background_color_logo_clair2);
+		buttonCommandePrete.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		buttonCommandePrete.setOpaque(true);
+		
+		buttonCommandePrete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		buttonCommandePrete.setBounds(642, 271, 214, 33);
+		contentPane.add(buttonCommandePrete);
+		
+		JButton buttonRefresh = new JButton("");
+		buttonRefresh.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/refresh.png")));
+		buttonRefresh.setBackground(background_color2);
+		buttonRefresh.setBorder(null);
+		buttonRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				executerServlet();
+			}
+		});
+		buttonRefresh.setBounds(957, 11, 41, 41);
+		contentPane.add(buttonRefresh);
+	}
+	
+	public static Context connexionServeurWildfly()
+	{
+		final Hashtable jndiProperties = new Hashtable();
+		jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+		Context context=null;
+		
+		try {
+			context = new InitialContext(jndiProperties);
+		} catch (NamingException e) {
+			e.printStackTrace();
+		}
+		
+		return context;
+	}
+		
+	private Collection<Tables> executerServlet()
+	{
+		Collection<Tables> tables = null;
+		
+		try
+		{
+			// Connexion à la servlet
+			URL url=new URL("http://localhost:8080/ProjetBarServlet/getTables");
+			URLConnection connexion=url.openConnection();
+			connexion.setDoOutput(true); 
+			// Récupération du flux de sortie
+			ObjectOutputStream fluxsortie = new ObjectOutputStream(connexion.getOutputStream());
+			// Envoi du nom à rechercher
+			fluxsortie.writeObject("");
+			// Récupération du flux d’entrée
+			ObjectInputStream fluxentree = new ObjectInputStream(connexion.getInputStream());
+			// Récupération du résultat de la requête
+			tables = (Collection<Tables>)fluxentree.readObject();
+		}
+		catch (Exception e)
+		{
+			System.out.println("erreur "+e);
+		}
+	
+		return tables;		
+	}
+}
