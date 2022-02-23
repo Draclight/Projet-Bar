@@ -38,7 +38,7 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 
 	@Override
 	public Collection<Tables> getTablesList() {
-		return em.createQuery("SELECT m FROM Module m").getResultList();
+		return em.createQuery("SELECT t FROM Tables t").getResultList();
 	}
 
 	@Override
