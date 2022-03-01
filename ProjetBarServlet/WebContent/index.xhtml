@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+
+<h:head></h:head>
+<body>
+	Bar :
+	<br />
+	<!-- 
+	<h:form>
+		<h:panelGrid columns="3">
+			<h:outputLabel>Module Name</h:outputLabel>
+			<h:inputText value="#{applicationBean.newModule.nom_module}"
+				id="nom_module" />
+			<br />
+			<h:outputLabel>Module Intitule</h:outputLabel>
+			<h:inputText value="#{applicationBean.newModule.intitule_module}"
+				id="intitule_module" />
+			<br />
+			<h:outputLabel>Nb Heures cours</h:outputLabel>
+			<h:inputText type="number"
+				value="#{applicationBean.newModule.nb_heures_cours}"
+				id="nb_heures_cours" />
+			<br />
+			<h:outputLabel>Nb Heures td</h:outputLabel>
+			<h:inputText type="number"
+				value="#{applicationBean.newModule.nb_heures_td}" id="nb_heures_td" />
+			<br />
+			<h:commandButton value="Save"
+				action="#{applicationBean.actionModule()}" />
+				<h:commandLink action="#{applicationBean.refresh()}" target="_self" value="refresh"/>
+		</h:panelGrid>
+	</h:form>
+ -->
+	
+	<!-- 
+	<h:form id="form">
+		<rich:panel>
+			<rich:messages />
+			<rich:dataTable id="tableModules"
+				value="#{applicationBean.lesModules}" rows="12" var="module"
+				filterVar="filterValue">
+				<f:facet name="noData">
+                Nothing found
+            </f:facet>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{module.id_module}" />
+				</rich:column>
+				<rich:column sortBy="#{module.nom_module}"
+					filterExpression="#{empty filterValue or fn:startsWith(module.nom_module, filterValue)}"
+					filterValue="#{moduleSortingBean.moduleFilter}">
+					<f:facet name="header">Module
+					</f:facet>
+					<h:outputText value="#{module.nom_module}" />
+				</rich:column>
+				<rich:column sortBy="#{module.intitule_module}"
+					filterExpression="#{empty filterValue or fn:startsWith(module.intitule_module, filterValue)}"
+					filterValue="#{moduleSortingBean.intituleFilter}">
+					<f:facet name="header">Intitulé UE
+					</f:facet>
+					<h:outputText value="#{module.intitule_module}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Nb heures cours" />
+					</f:facet>
+					<h:outputText value="#{module.nb_heures_cours}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Nb heures TD" />
+					</f:facet>
+					<h:outputText value="#{module.nb_heures_td}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="actions" />
+					</f:facet>
+					<h:commandLink action="#{applicationBean.deleteModule(module.id_module)}" target="_self" value="DELETE"/>
+					<br />
+					<h:commandLink action="#{applicationBean.editModule(module.id_module)}" target="_self" value="Edit"/>
+				</rich:column>
+				<f:facet name="footer">
+					<rich:dataScroller />
+				</f:facet>
+			</rich:dataTable>
+		</rich:panel>
+	</h:form>
+ -->
+</body>
+</html>

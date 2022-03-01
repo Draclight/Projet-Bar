@@ -1,12 +1,15 @@
 package ejbs;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import model.Order;
+import java.util.List;
 
 /**
  * Session Bean implementation class TableManagerStateless
@@ -51,7 +54,6 @@ public class OrderManagerStateless implements OrderManagerStatelessRemote {
 
 	@Override
 	public Collection<Order> getOrdersByTableId(int tableId) {
-		// TODO Auto-generated method stub
-		return null;
+		return getOrdersList();
 	}
 }

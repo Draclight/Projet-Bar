@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
+import ejbs.OrderManagerStatelessRemote;
 import ejbs.TableManagerStatelessRemote;
 
 public class EjbLocator {
@@ -24,17 +24,21 @@ public class EjbLocator {
 			final Hashtable jndiProperties = new Hashtable();
 			jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
 			final Context context = new InitialContext(jndiProperties);
-			final String appName = "ProjetContactEAR";
-			final String moduleName = "ProjetContactEJB";
-			return (T) context
-					.lookup("java:global/" + appName + "/" + moduleName + "/" + beanName + "!" + ejbClass.getName());
+			final String appName = "ProjetBarComplet";
+			final String moduleName = "ProjetBarEJB";
+			return (T) context.lookup("java:global/" + appName + "/" + moduleName + "/" + beanName + "!" + ejbClass.getName());
+			//return (T)context.lookup("java:global/ProjetBarComplet/ProjetBarEJB/OrderManagerStatelessRemote!ejbs.OrderManagerStatelessRemote");			
 		} catch (NamingException e) {
 			return null;
 		}
 	}
 
 	public TableManagerStatelessRemote getTableManager() {
-		return getEjb(TableManagerStatelessRemote.class, "TableManager");
+		return getEjb(TableManagerStatelessRemote.class, "TableManagerStateless");
+	}
+	
+	public OrderManagerStatelessRemote getOrderManager() {
+		return getEjb(OrderManagerStatelessRemote.class, "OrderManagerStateless");
 	}
 	
 // Rajouter ici une méthode pour tout nouvel EJB auquel on souhaite accéder

@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+<h:head></h:head> 
+<body>
+	<h1>Bar :</h1>
+	<br />
+	<h:form id="form">
+		<rich:panel>
+			<rich:messages />
+			<rich:dataTable id="lesTables"
+				value="#{applicationBean.lesTables}" rows="12" var="table"
+				filterVar="filterValue">
+				<f:facet name="noData">
+                Nothing found
+            </f:facet>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Id" />
+					</f:facet>
+					<h:outputText value="#{table.tableId}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Libre ?" />
+					</f:facet>
+					<h:outputText value="#{table.isEmpty}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="Réservé ?" />
+					</f:facet>
+					<h:outputText value="#{table.isBooked}" />
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">
+						<h:outputText value="actions" />
+					</f:facet>
+					<h:commandLink action="#{applicationBean.nouvelleCommande(table.tableId)}" target="_blank" value="new"/>					
+				</rich:column>
+				<f:facet name="footer">
+					<rich:dataScroller />
+				</f:facet>
+			</rich:dataTable>
+		</rich:panel>
+	</h:form>
+</body> 
+</html>

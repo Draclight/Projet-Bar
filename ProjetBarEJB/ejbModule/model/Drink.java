@@ -20,6 +20,7 @@ public class Drink implements Serializable {
     private int drinkId;
 	private String drinkName;
 	private double drinkPrice;
+	private int drinkQuantity;
 	
 	public int getDrinkId() {
 		return drinkId;
@@ -43,6 +44,14 @@ public class Drink implements Serializable {
 	
 	public void setDrinkPrice(double drinkPrice) {
 		this.drinkPrice = drinkPrice;
+	}
+	
+	public int getDrinkQuantity() {
+		return drinkQuantity;
+	}
+	
+	public void setDrinkQuanity(int qty) {
+		this.drinkQuantity = qty;
 	}
 	
 	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER, mappedBy = "drinksOfOrder")

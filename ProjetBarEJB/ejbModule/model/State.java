@@ -40,7 +40,7 @@ public class State implements Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "orderId")
+	@JoinColumn(name = "stateId")
     private Set<Order> ordersOfState = new HashSet<Order>();
 
 	public Set<Order> getOrdersOfState() {

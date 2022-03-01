@@ -58,8 +58,8 @@ public class Tables implements Serializable{
 		this.isBooked = isBooked;
 	}
 	
-	@OneToMany(cascade = CascadeType.DETACH)
-	@JoinColumn(name = "orderId")
+	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@JoinColumn(name = "tableId")
     private Set<Order> ordersOfTable = new HashSet<Order>();
 
 	public Set<Order> getOrdersOfTable() {

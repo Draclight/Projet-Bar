@@ -10,7 +10,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Collection;
 import java.util.Hashtable;
-
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -39,6 +38,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import ejbs.*;
 import model.*;
+import java.util.Set;
 
 public class InterfaceServeur extends JFrame {
 
@@ -48,9 +48,12 @@ public class InterfaceServeur extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTable tableCommandesAssociees;
-	private JTable tableCommandesRestantes;
+	private JTable tableBoissonsAssociees;
 
 	private Context context;
+	private static model.Tables currentTable;
+	private model.Order currentOrder;
+	
 	
 	/**
 	 * Launch the application.
@@ -121,6 +124,7 @@ public class InterfaceServeur extends JFrame {
 				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_3.png")));
 				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
 				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
+				getOrdersOfTable(Label_tableSelected.getText());
 			}
 		});
 		buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
@@ -136,6 +140,7 @@ public class InterfaceServeur extends JFrame {
 				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_2.png")));
 				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
 				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
+				getOrdersOfTable(Label_tableSelected.getText());
 			}
 		});
 		buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
@@ -152,6 +157,7 @@ public class InterfaceServeur extends JFrame {
 				buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/selected_icone_cercle_1.png")));
 				buttonTable2.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_2.png")));
 				buttonTable3.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_3.png")));
+				getOrdersOfTable(Label_tableSelected.getText());
 			}
 		});
 		buttonTable1.setIcon(new ImageIcon(InterfaceServeur.class.getResource("/img/icone_cercle_1.png")));
@@ -184,21 +190,15 @@ public class InterfaceServeur extends JFrame {
 		tableCommandesAssociees.setRowHeight(tableCommandesAssociees.getRowHeight() + 10);
 		tableCommandesAssociees.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
 		tableCommandesAssociees.setSelectionBackground(SystemColor.controlHighlight);
-
-		tableCommandesAssociees.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"B.Blonde", "3"},
-				{"Vodka Rdbll", "2"},
-				{null, null},
-				{null, null},
-				{null, null},
-				{null, null},
-			},
-			new String[] {
-				"Boisson", "Quantit\u00E9"
-			}
-		));
 		scrollPaneCommandesAssociees.setViewportView(tableCommandesAssociees);
+		
+		DefaultTableModel modelCommandesAssociees = new DefaultTableModel(0, 0);
+		modelCommandesAssociees.addColumn("ID");
+        modelCommandesAssociees.addColumn("Prix");
+        tableCommandesAssociees.setAutoCreateRowSorter(true);
+        tableCommandesAssociees.setFillsViewportHeight(true);
+        tableCommandesAssociees.setModel(modelCommandesAssociees);
+
 		
 		JScrollPane scrollPaneCommandesRestantes = new JScrollPane();
 		scrollPaneCommandesRestantes.setFont(new Font("Roboto", Font.PLAIN, 20));
@@ -206,36 +206,22 @@ public class InterfaceServeur extends JFrame {
 		contentPane.add(scrollPaneCommandesRestantes);
 		
 		scrollPaneCommandesRestantes.getVerticalScrollBar().setUI(new BasicScrollBarUI() );
-		scrollPaneCommandesRestantes.getHorizontalScrollBar().setUI(new BasicScrollBarUI());
-
+		scrollPaneCommandesRestantes.getHorizontalScrollBar().setUI(new BasicScrollBarUI());		
 		
-		
-		tableCommandesRestantes = new JTable();
-		tableCommandesRestantes.setAutoCreateRowSorter(true);
-		tableCommandesRestantes.setRowHeight(tableCommandesRestantes.getRowHeight() + 10);
-		tableCommandesRestantes.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
-		scrollPaneCommandesRestantes.setViewportView(tableCommandesRestantes);
+		tableBoissonsAssociees = new JTable();
+		tableBoissonsAssociees.setAutoCreateRowSorter(true);
+		tableBoissonsAssociees.setRowHeight(tableBoissonsAssociees.getRowHeight() + 10);
+		tableBoissonsAssociees.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
+		scrollPaneCommandesRestantes.setViewportView(tableBoissonsAssociees);
 
-		tableCommandesRestantes.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"B.Blonde", "3", "3"},
-				{"Vodka Rdbll", "2", "3"},
-				{"Cercueil", "4", "2"},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-				{null, null, null},
-			},
-			new String[] {
-				"Boisson", "Quantit\u00E9", "Table"
-			}
-		));
-		tableCommandesRestantes.setSelectionBackground(SystemColor.controlHighlight);
-		tableCommandesRestantes.setFont(new Font("Roboto", Font.PLAIN, 18));
+		DefaultTableModel modelBoissonsAssociees = new DefaultTableModel(0, 0);
+		modelBoissonsAssociees.addColumn("Nom");
+		tableBoissonsAssociees.setAutoCreateRowSorter(true);
+		tableBoissonsAssociees.setFillsViewportHeight(true);
+		tableBoissonsAssociees.setModel(modelBoissonsAssociees);
+
+		tableBoissonsAssociees.setSelectionBackground(SystemColor.controlHighlight);
+		tableBoissonsAssociees.setFont(new Font("Roboto", Font.PLAIN, 18));
 		
 		JLabel labelCommandesAssociees = new JLabel("Commandes associ\u00E9es");
 		labelCommandesAssociees.setHorizontalAlignment(SwingConstants.CENTER);
@@ -269,7 +255,7 @@ public class InterfaceServeur extends JFrame {
 		buttonRefresh.setBorder(null);
 		buttonRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				executerServlet();
+
 			}
 		});
 		buttonRefresh.setBounds(957, 11, 41, 41);
@@ -291,30 +277,71 @@ public class InterfaceServeur extends JFrame {
 		return context;
 	}
 		
-	private Collection<Tables> executerServlet()
+	private void getOrdersOfTable(String tableId) {
+		//récupération de la table sélectionné
+		currentTable = getTable(tableId);
+		
+		//commande
+		if (currentTable != null ) {
+			if (currentTable.getOrdersOfTable() != null) {
+
+			}
+		}		
+	}
+
+	private model.Tables getTable(String _tableId)
 	{
-		Collection<Tables> tables = null;
+		model.Tables table = null;
+		int tableId = Integer.parseInt(_tableId);
 		
 		try
 		{
 			// Connexion à la servlet
-			URL url=new URL("http://localhost:8080/ProjetBarServlet/getTables");
+			URL url=new URL("http://localhost:8080/ProjetBarServlet/OrderOfTable");
 			URLConnection connexion=url.openConnection();
 			connexion.setDoOutput(true); 
 			// Récupération du flux de sortie
 			ObjectOutputStream fluxsortie = new ObjectOutputStream(connexion.getOutputStream());
 			// Envoi du nom à rechercher
-			fluxsortie.writeObject("");
+			fluxsortie.writeObject(tableId);
 			// Récupération du flux d’entrée
 			ObjectInputStream fluxentree = new ObjectInputStream(connexion.getInputStream());
 			// Récupération du résultat de la requête
-			tables = (Collection<Tables>)fluxentree.readObject();
+			table = (model.Tables)fluxentree.readObject();
 		}
 		catch (Exception e)
 		{
-			System.out.println("erreur "+e);
+			System.out.println("erreur " + e);
 		}
 	
-		return tables;		
+		return table;		
+	}
+
+	private void setOrderReady(model.Order order) {
+		try
+		{
+			// Connexion à la servlet
+			URL url=new URL("http://localhost:8080/ProjetBarServlet/SetOrderReady");
+			URLConnection connexion=url.openConnection();
+			connexion.setDoOutput(true); 
+			
+			// Récupération du flux de sortie
+			ObjectOutputStream fluxsortie = new ObjectOutputStream(connexion.getOutputStream());
+			
+			// Envoi du nom à rechercher
+			fluxsortie.writeObject(order);
+			
+			// Récupération du flux d’entrée
+			ObjectInputStream fluxentree = new ObjectInputStream(connexion.getInputStream());
+			
+			// Récupération du résultat de la requête
+			order = (model.Order)fluxentree.readObject();
+		}
+		catch (Exception e)
+		{
+			System.out.println("erreur " + e);
+		}
+	
+		currentOrder = order;
 	}
 }

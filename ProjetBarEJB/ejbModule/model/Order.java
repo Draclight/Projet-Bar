@@ -64,9 +64,7 @@ public class Order implements Serializable {
 	}
 	
 	@ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.EAGER)
-	@JoinTable(name = "orderDetails", 
-		joinColumns = @JoinColumn(name = "orderId", referencedColumnName = "orderId"), 
-		inverseJoinColumns = @JoinColumn(name = "drinkId", referencedColumnName = "drinkId"))
+	@JoinTable(name = "orderDetails", joinColumns = @JoinColumn(name = "orderId", referencedColumnName = "orderId"), inverseJoinColumns = @JoinColumn(name = "drinkId", referencedColumnName = "drinkId"))
 	public Set<Drink> drinksOfOrder = new HashSet<Drink>();
 
 	public Set<Drink> getDrinksOfOrder() {

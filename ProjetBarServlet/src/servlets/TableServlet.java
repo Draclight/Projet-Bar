@@ -19,7 +19,7 @@ import model.*;
 /**
  * Servlet implementation class TableServlet
  */
-@WebServlet("/getTables")
+@WebServlet("/Tables")
 public class TableServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
