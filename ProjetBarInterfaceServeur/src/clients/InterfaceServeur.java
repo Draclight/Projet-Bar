@@ -18,6 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.SwingConstants;
@@ -38,6 +40,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import ejbs.*;
 import model.*;
+import dtos.*;
 import java.util.Set;
 
 public class InterfaceServeur extends JFrame {
@@ -49,11 +52,14 @@ public class InterfaceServeur extends JFrame {
 	private JPanel contentPane;
 	private JTable tableCommandesAssociees;
 	private JTable tableBoissonsAssociees;
-
-	private Context context;
-	private static model.Tables currentTable;
-	private model.Order currentOrder;
+	private DefaultTableModel modelCommandesAssociees = new DefaultTableModel(0, 0);
+	private DefaultTableModel modelBoissonsAssociees = new DefaultTableModel(0, 0);
 	
+	private Context context;
+	private TablesDto currentTable;
+	private OrderDto currentOrder;
+	
+	private String enPréparation = "En préparation";
 	
 	/**
 	 * Launch the application.
@@ -192,9 +198,9 @@ public class InterfaceServeur extends JFrame {
 		tableCommandesAssociees.setSelectionBackground(SystemColor.controlHighlight);
 		scrollPaneCommandesAssociees.setViewportView(tableCommandesAssociees);
 		
-		DefaultTableModel modelCommandesAssociees = new DefaultTableModel(0, 0);
 		modelCommandesAssociees.addColumn("ID");
         modelCommandesAssociees.addColumn("Prix");
+        modelCommandesAssociees.addColumn("Etat");
         tableCommandesAssociees.setAutoCreateRowSorter(true);
         tableCommandesAssociees.setFillsViewportHeight(true);
         tableCommandesAssociees.setModel(modelCommandesAssociees);
@@ -214,7 +220,6 @@ public class InterfaceServeur extends JFrame {
 		tableBoissonsAssociees.getTableHeader().setFont(new Font("Roboto", Font.PLAIN, 18));
 		scrollPaneCommandesRestantes.setViewportView(tableBoissonsAssociees);
 
-		DefaultTableModel modelBoissonsAssociees = new DefaultTableModel(0, 0);
 		modelBoissonsAssociees.addColumn("Nom");
 		tableBoissonsAssociees.setAutoCreateRowSorter(true);
 		tableBoissonsAssociees.setFillsViewportHeight(true);
@@ -244,6 +249,18 @@ public class InterfaceServeur extends JFrame {
 		
 		buttonCommandePrete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (tableCommandesAssociees.getSelectedRow() > -1) {
+					String state = (String)tableCommandesAssociees.getValueAt(tableCommandesAssociees.getSelectedRow(), 2).toString();
+
+					if (state.equalsIgnoreCase(enPréparation)) {
+						try {
+	        				setOrderReady(currentOrder);
+	        				tableCommandesAssociees.setValueAt(currentOrder.getOrderState().getStateName(), tableCommandesAssociees.getSelectedRow(), 2);
+						} catch (Exception ex) {
+							System.out.println("erreur : " + ex.getMessage());
+						}
+					}
+            	}
 			}
 		});
 		buttonCommandePrete.setBounds(642, 271, 214, 33);
@@ -260,6 +277,35 @@ public class InterfaceServeur extends JFrame {
 		});
 		buttonRefresh.setBounds(957, 11, 41, 41);
 		contentPane.add(buttonRefresh);
+		
+		tableCommandesAssociees.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent event) {
+            	if (!event.getValueIsAdjusting() && tableCommandesAssociees.getSelectedRow() > -1) {
+            		modelBoissonsAssociees.setRowCount(0);
+            		try {
+						var orderId = (int)tableCommandesAssociees.getValueAt(tableCommandesAssociees.getSelectedRow(), 0);
+
+						for (var o : currentTable.getOrdersOfTable()) {
+		                    if (o.getOrderId() == orderId) {
+								currentOrder = o;
+								break;
+							}
+		                }
+						
+						if (currentOrder.getOrderId() == orderId ) {
+							for (var d : currentOrder.getDrinksOfOrder()) {
+			                    Object[] drink = { d.getDrinkName()};
+			                    modelBoissonsAssociees.addRow(drink);
+			                }	
+						}	
+						
+					} catch (Exception e) {
+						System.out.println("erreur : " + e.getMessage());
+					}
+            	}
+            }
+        });
 	}
 	
 	public static Context connexionServeurWildfly()
@@ -277,22 +323,10 @@ public class InterfaceServeur extends JFrame {
 		return context;
 	}
 		
-	private void getOrdersOfTable(String tableId) {
-		//récupération de la table sélectionné
-		currentTable = getTable(tableId);
-		
-		//commande
-		if (currentTable != null ) {
-			if (currentTable.getOrdersOfTable() != null) {
-
-			}
-		}		
-	}
-
-	private model.Tables getTable(String _tableId)
-	{
-		model.Tables table = null;
+	private void getOrdersOfTable(String _tableId) {
 		int tableId = Integer.parseInt(_tableId);
+		modelCommandesAssociees.setRowCount(0);
+		modelBoissonsAssociees.setRowCount(0);
 		
 		try
 		{
@@ -307,17 +341,24 @@ public class InterfaceServeur extends JFrame {
 			// Récupération du flux d’entrée
 			ObjectInputStream fluxentree = new ObjectInputStream(connexion.getInputStream());
 			// Récupération du résultat de la requête
-			table = (model.Tables)fluxentree.readObject();
+			currentTable = (TablesDto)fluxentree.readObject();
 		}
 		catch (Exception e)
 		{
 			System.out.println("erreur " + e);
 		}
-	
-		return table;		
+			
+		if (currentTable != null ) {
+			if (currentTable.getOrdersOfTable() != null) {
+                for (var o : currentTable.getOrdersOfTable()) {
+                    Object[] order = { o.getOrderId(), o.getOrderAmount(), o.getOrderState().getStateName()};
+                    modelCommandesAssociees.addRow(order);
+                }
+			}
+		}		
 	}
 
-	private void setOrderReady(model.Order order) {
+	private void setOrderReady(OrderDto order) {
 		try
 		{
 			// Connexion à la servlet
@@ -329,19 +370,17 @@ public class InterfaceServeur extends JFrame {
 			ObjectOutputStream fluxsortie = new ObjectOutputStream(connexion.getOutputStream());
 			
 			// Envoi du nom à rechercher
-			fluxsortie.writeObject(order);
+			fluxsortie.writeObject(currentOrder);
 			
 			// Récupération du flux d’entrée
 			ObjectInputStream fluxentree = new ObjectInputStream(connexion.getInputStream());
 			
 			// Récupération du résultat de la requête
-			order = (model.Order)fluxentree.readObject();
+			currentOrder = (OrderDto)fluxentree.readObject();
 		}
 		catch (Exception e)
 		{
 			System.out.println("erreur " + e);
 		}
-	
-		currentOrder = order;
 	}
 }

@@ -1,8 +1,9 @@
-package model;
+package dtos;
 
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,22 +16,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "States")
-public class State implements Serializable {
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO) 
+public class StateDto implements Serializable {
     private int stateId;
 	private String stateName;
+    private List<OrderDto> ordersOfState;
+    
+	public StateDto() { }
 	
-	public State() { }
-	
-	public State(int stateId, String stateName) {
+	public StateDto(int stateId, String stateName) {
 		this.stateId = stateId;
 		this.stateName = stateName;
 	}
-
-
 
 	public int getStateId() {
 		return stateId;
@@ -48,15 +44,11 @@ public class State implements Serializable {
 		this.stateName = stateName;
 	}
 
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	@JoinColumn(name = "stateId")
-    private Set<Order> ordersOfState = new HashSet<Order>();
-
-	public Set<Order> getOrdersOfState() {
+	public List<OrderDto> getOrdersOfState() {
 		return ordersOfState;
 	}
 
-	public void setOrdersOfState(Set<Order> ordersOfState) {
-		ordersOfState = ordersOfState;
+	public void setOrdersOfState(List<OrderDto> ordersOfState) {
+		this.ordersOfState = ordersOfState;
 	}
 }

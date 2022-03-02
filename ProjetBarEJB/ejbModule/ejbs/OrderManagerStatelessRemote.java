@@ -3,13 +3,13 @@ package ejbs;
 import java.util.Collection;
 import javax.ejb.Remote;
 import model.Order;
-
+import dtos.*;
 @Remote
 public interface OrderManagerStatelessRemote {
 
-	public Order addOrder(Order order);
-	public Order getOrder(int orderId);
+	public OrderDto addOrder(OrderDto order);
+	public OrderDto getOrder(int orderId);
 	public Collection<Order> getOrdersList();
-	public Order editOrder(Order order);
+	public OrderDto editOrder(OrderDto order);
 	public Collection<Order> getOrdersByTableId(int tableId);
 }

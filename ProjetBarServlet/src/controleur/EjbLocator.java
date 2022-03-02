@@ -5,8 +5,7 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import ejbs.OrderManagerStatelessRemote;
-import ejbs.TableManagerStatelessRemote;
+import ejbs.*;
 
 public class EjbLocator {
 	private static Context ctx;
@@ -39,6 +38,10 @@ public class EjbLocator {
 	
 	public OrderManagerStatelessRemote getOrderManager() {
 		return getEjb(OrderManagerStatelessRemote.class, "OrderManagerStateless");
+	}
+
+	public StateManagerStatelessRemote getStateManager() {
+		return getEjb(StateManagerStatelessRemote.class, "StateManagerStateless");
 	}
 	
 // Rajouter ici une méthode pour tout nouvel EJB auquel on souhaite accéder

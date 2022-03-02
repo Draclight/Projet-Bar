@@ -1,7 +1,8 @@
-package model;
+package dtos;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -16,19 +17,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "Tables")
-public class Tables implements Serializable{
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO) 
+public class TablesDto implements Serializable{
     private int tableId;
     private int nbChair;
     private boolean isEmpty;
     private boolean isBooked;
-	
-    public Tables() {}
+    private List<OrderDto> ordersOfTable;
+
+    public TablesDto() {}
     
-    public Tables(int tableId, int nbChair, boolean isEmpty, boolean isBooked) {
+    public TablesDto(int tableId, int nbChair, boolean isEmpty, boolean isBooked) {
 		this.tableId = tableId;
 		this.nbChair = nbChair;
 		this.isEmpty = isEmpty;
@@ -67,15 +65,11 @@ public class Tables implements Serializable{
 		this.isBooked = isBooked;
 	}
 	
-	@OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	@JoinColumn(name = "tableId", referencedColumnName = "tableId")
-    private Set<Order> ordersOfTable = new HashSet<Order>();
-
-	public Set<Order> getOrdersOfTable() {
+	public List<OrderDto> getOrdersOfTable() {
 		return ordersOfTable;
 	}
 
-	public void setOrdersOfTable(Set<Order> ordersOfTable) {
+	public void setOrdersOfTable(List<OrderDto> ordersOfTable) {
 		this.ordersOfTable = ordersOfTable;
 	}
 	

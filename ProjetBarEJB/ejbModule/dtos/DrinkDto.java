@@ -1,7 +1,8 @@
-package model;
+package dtos;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,23 +13,21 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "Drinks")
-public class Drink implements Serializable {
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO) 
+public class DrinkDto implements Serializable {
     private int drinkId;
 	private String drinkName;
 	private double drinkPrice;
 	private int drinkQuantity;
-
-	public Drink() { }
+	private List<OrderDto> ordersOfDrink;
 	
-	public Drink(int drinkId, String drinkName, double drinkPrice, int drinkQuantity) {
+	public DrinkDto() { }
+	
+	public DrinkDto(int drinkId, String drinkName, double drinkPrice, int drinkQuantity, List<OrderDto> ordersOfDrink) {
 		this.drinkId = drinkId;
 		this.drinkName = drinkName;
 		this.drinkPrice = drinkPrice;
 		this.drinkQuantity = drinkQuantity;
+		this.ordersOfDrink = ordersOfDrink;
 	}
 
 	public int getDrinkId() {
@@ -59,19 +58,15 @@ public class Drink implements Serializable {
 		return drinkQuantity;
 	}
 	
-	public void setDrinkQuanity(int qty) {
-		this.drinkQuantity = qty;
+	public void setDrinkQuantity(int drinkQuantity) {
+		this.drinkQuantity = drinkQuantity;
 	}
-	
-	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER, mappedBy = "drinksOfOrder")
-	private Set<Order> ordersOfDrink = new HashSet<Order>();
 
-	public Set<Order> getOrdersOfDrink() {
+	public List<OrderDto> getOrdersOfDrink() {
 		return ordersOfDrink;
 	}
 
-	public void setOrdersOfDrink(Set<Order> ordersOfDrink) {
+	public void setOrdersOfDrink(List<OrderDto> ordersOfDrink) {
 		this.ordersOfDrink = ordersOfDrink;
 	}
-	
 }

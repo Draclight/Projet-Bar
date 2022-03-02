@@ -2,14 +2,14 @@ package ejbs;
 
 import java.util.Collection;
 import javax.ejb.Remote;
-import model.Bill;
+import dtos.*;
 
 @Remote
 public interface BillManagerStatelessRemote {
 
-	public Bill addBill(Bill bill);
-	public Bill getBill(int billId);
-	public Collection<Bill> getBillsList();
-	public Bill editBill(Bill bill);
-	public Bill getBillByOrderId(int orderId);
+	public BillDto addBill(BillDto bill);
+	public BillDto getBill(int billId);
+	public Collection<BillDto> getBillsList();
+	public BillDto editBill(BillDto bill);
+	public BillDto getBillByOrderId(int orderId);
 }

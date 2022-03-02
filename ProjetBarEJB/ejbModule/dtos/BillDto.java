@@ -1,4 +1,4 @@
-package model;
+package dtos;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
@@ -15,18 +15,14 @@ import javax.persistence.CascadeType;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "Bills")
-public class Bill implements Serializable {
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO) 
+public class BillDto implements Serializable {
     private int billId;
 	private String billAmount;
+	private OrderDto order;
 	
-	public Bill() { }
-	
-	public Bill(int billId, String billAmount, Order order) {
-		super();
+	public BillDto() { }
+
+	public BillDto(int billId, String billAmount, OrderDto order) {
 		this.billId = billId;
 		this.billAmount = billAmount;
 		this.order = order;
@@ -48,15 +44,11 @@ public class Bill implements Serializable {
 		this.billAmount = billAmount;
 	}
 
-	@OneToOne
-    @JoinColumn(name = "orderId", referencedColumnName = "orderId")
-	private Order order;
-
-	public Order getOrder() {
+	public OrderDto getOrder() {
 		return order;
 	}
 
-	public void setOrder(Order order) {
+	public void setOrder(OrderDto order) {
 		this.order = order;
 	}
 }

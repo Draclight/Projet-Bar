@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import model.State;
+import dtos.StateDto;
 /**
  * Session Bean implementation class TableManagerStateless
  */
@@ -31,8 +32,12 @@ public class StateManagerStateless implements StateManagerStatelessRemote {
 	}
 
 	@Override
-	public State getState(int stateId) {
-		return em.find(State.class, stateId);
+	public StateDto getState(int stateId) {
+		State state = em.find(State.class, stateId);
+		StateDto stateDto = new StateDto();
+		stateDto.setStateId(state.getStateId());
+		stateDto.setStateName(state.getStateName());
+		return stateDto;
 	}
 
 	@Override
