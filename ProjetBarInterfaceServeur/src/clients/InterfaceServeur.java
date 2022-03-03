@@ -52,8 +52,18 @@ public class InterfaceServeur extends JFrame {
 	private JPanel contentPane;
 	private JTable tableCommandesAssociees;
 	private JTable tableBoissonsAssociees;
-	private DefaultTableModel modelCommandesAssociees = new DefaultTableModel(0, 0);
-	private DefaultTableModel modelBoissonsAssociees = new DefaultTableModel(0, 0);
+	private DefaultTableModel modelCommandesAssociees = new DefaultTableModel() {
+		   @Override
+		   public boolean isCellEditable(int row, int column) {
+		       return false;
+		   }
+		};
+	private DefaultTableModel modelBoissonsAssociees = new DefaultTableModel() {
+		   @Override
+		   public boolean isCellEditable(int row, int column) {
+		       return false;
+		   }
+		};
 	
 	private Context context;
 	private TablesDto currentTable;
@@ -289,6 +299,7 @@ public class InterfaceServeur extends JFrame {
 						for (var o : currentTable.getOrdersOfTable()) {
 		                    if (o.getOrderId() == orderId) {
 								currentOrder = o;
+								//currentOrder.setTableOfOrder(currentTable);
 								break;
 							}
 		                }

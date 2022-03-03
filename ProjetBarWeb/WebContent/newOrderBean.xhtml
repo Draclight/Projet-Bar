@@ -10,14 +10,12 @@
 
 <h:head></h:head>
 <body>
-	Bar :
+	Bar - Nouvelle commande  : <h:outputText value="#{newOrderBean.tableId}" />
 	<br />
 	<h:form id="form">
 		<rich:panel>
 			<rich:messages />
-			<rich:dataTable id="tables"
-				value="#{applicationBean.lesTables}" rows="12" var="uneTable"
-				filterVar="filterValue">
+			<rich:dataTable id="drinks" value="#{newOrderBean.lesDrinks}" var="drink">
 				<f:facet name="noData">
                 Nothing found
             </f:facet>
@@ -25,40 +23,39 @@
 					<f:facet name="header">
 						<h:outputText value="Id" />
 					</f:facet>
-					<h:outputText value="#{uneTable.tableId}" />
+					<h:outputText value="#{drink.drinkId}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">
-						<h:outputText value="Personnes" />
+						<h:outputText value="Nom" />
 					</f:facet>
-					<h:outputText value="#{uneTable.nbChair}" />
+					<h:outputText value="#{drink.drinkName}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">
-						<h:outputText value="Libre" />
+						<h:outputText value="Prix" />
 					</f:facet>
-					<h:outputText value="#{uneTable.isEmpty}" />
+					<h:outputText value="#{drink.drinkPrice}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">
-						<h:outputText value="Réservé" />
+						<h:outputText value="Quantite" />
 					</f:facet>
-					<h:outputText value="#{uneTable.isBooked}" />
+					<h:outputText value="#{drink.drinkQuantity}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">
+						<h:outputText value="Qty Commandé" />
 					</f:facet>
-					<h:link value="Nouvelle commande" outcome="/newOrderBean.xhtml" fragment="top">
-					    <f:param name="tableId" value="#{uneTable.tableId}" />
-					</h:link>
-				</rich:column>
-				<rich:column>
-					<h:commandLink action="#{applicationBean.orderDelivered(uneTable.tableId)}" target="_self" value="Commande livré"/>
+					<h:inputText value = "#{drink.drinkOrderedQuantity}">					
+						<f:convertNumber integerOnly="true"/>
+					</h:inputText>
 				</rich:column>
 				<f:facet name="footer">
 					<rich:dataScroller />
 				</f:facet>
 			</rich:dataTable>
+			<h:commandButton value="Save" action="#{newOrderBean.save()}" />
 		</rich:panel>
 	</h:form>
 </body>

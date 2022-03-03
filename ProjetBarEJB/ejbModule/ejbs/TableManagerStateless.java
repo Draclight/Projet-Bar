@@ -2,6 +2,7 @@ package ejbs;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -56,7 +57,7 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 				stateDto.setStateName(o.getOrderState().getStateName());
 				orderDto.setOrderState(stateDto);	
 				List<DrinkDto> drinksDto = new ArrayList<DrinkDto>();
-				for(Drink d : o.getDrinksOfOrder()) {
+				for(Drinks d : o.getDrinksOfOrder()) {
 					DrinkDto drink = new DrinkDto();
 					drink.setDrinkId(d.getDrinkId());
 					drink.setDrinkName(d.getDrinkName());
@@ -65,6 +66,7 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 					drinksDto.add(drink);
 				}
 				orderDto.setDrinksOfOrder(drinksDto);
+				orderDto.setTableOfOrder(table);
 				ordersDto.add(orderDto);
 			}
 			
@@ -95,7 +97,7 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 				stateDto.setStateName(o.getOrderState().getStateName());
 				orderDto.setOrderState(stateDto);	
 				List<DrinkDto> drinksDto = new ArrayList<DrinkDto>();
-				for(Drink d : o.getDrinksOfOrder()) {
+				for(Drinks d : o.getDrinksOfOrder()) {
 					DrinkDto drink = new DrinkDto();
 					drink.setDrinkId(d.getDrinkId());
 					drink.setDrinkName(d.getDrinkName());
@@ -107,6 +109,7 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 			}
 			
 			table.setOrdersOfTable(ordersDto);
+			tablesDto.add(table);
 		}
 		
 		return tablesDto; 
@@ -117,5 +120,23 @@ public class TableManagerStateless implements TableManagerStatelessRemote {
 		em.merge(tables);
 		em.flush();
 		return tables;		
+	}
+	
+	@Override
+	public TablesDto getOrderToPayByTableId(int tableId) {
+		TablesDto ret = new TablesDto();
+		
+		ret = getTable(tableId);
+		if (ret != null) {
+			List<OrderDto> ordersDto = new ArrayList<OrderDto>();
+			for(OrderDto o : ret.getOrdersOfTable()) {
+				if (o.getOrderState().getStateId() == 3) {
+					ordersDto.add(o);
+				}
+			}
+			ret.setOrdersOfTable(ordersDto);
+		}		
+		
+		return ret;
 	}
 }

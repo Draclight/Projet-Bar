@@ -33,8 +33,19 @@ public class BillManagerStateless implements BillManagerStatelessRemote {
 	@Override
 	public BillDto addBill(BillDto billDto) {
 		Bill bill = new Bill();
+		bill.setBillAmount(billDto.getBillAmount());
+		Order order = new Order();
+		order.setOrderAmount(billDto.getOrder().getOrderAmount());
+		order.setOrderId(billDto.getOrder().getOrderId());
+		//State state = new State();
+		//order.setOrderState(state);
+		//List<Drinks> drinks = new ArrayList<Drinks>();
+		//order.setDrinksOfOrder(drinks);
+		//order.setOrderTable(billDto.getOrder().getOrderId());
+		bill.setOrder(order);
 		em.persist(bill);	
 		em.flush();
+		billDto.setBillId(bill.getBillId());
 		return billDto;
 	}
 
@@ -49,7 +60,7 @@ public class BillManagerStateless implements BillManagerStatelessRemote {
 		stateDto.setStateName(bill.getOrder().getOrderState().getStateName());
 		orderDto.setOrderState(stateDto);	
 		List<DrinkDto> drinksDto = new ArrayList<DrinkDto>();
-		for(Drink d : bill.getOrder().getDrinksOfOrder()) {
+		for(Drinks d : bill.getOrder().getDrinksOfOrder()) {
 			DrinkDto drink = new DrinkDto();
 			drink.setDrinkId(d.getDrinkId());
 			drink.setDrinkName(d.getDrinkName());

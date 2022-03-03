@@ -13,4 +13,5 @@ public interface TableManagerStatelessRemote {
 	public TablesDto getTable(int tableId);
 	public List<TablesDto> getTablesList();
 	public Tables editTable(Tables tables);
+	public TablesDto getOrderToPayByTableId(int tableId);
 }

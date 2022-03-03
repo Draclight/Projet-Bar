@@ -47,15 +47,16 @@ public class OrderOfTable extends HttpServlet {
     	try {
     		// Connexion au serveur d'application (pas besoin de fichier properties supplémentaires ici. Le .EAR simplifie la discussion entre les composants
 	    	context = new InitialContext(jndiProperties);
+	    	
 	    	// Récupération d'un pointeur sur un ejb sessions sans état via son JNDI
 			ObjectInputStream fluxentree = new ObjectInputStream(request.getInputStream());
+			
 			// Récupération du résultat de la requête
 			tableId = (int)fluxentree.readObject();
 
 	    	tableManager = EjbLocator.getLocator().getTableManager();  
 			
 			if (tableManager != null) {
-
 				TablesDto table = tableManager.getTable(tableId);
 				
 				// Préparation du flux de sortie
@@ -65,7 +66,7 @@ public class OrderOfTable extends HttpServlet {
 				sortie.writeObject(table);
 			}
 		} catch (Exception ex) {
-				System.out.println("Erreur d'exécution de la requête SQL : " + ex);
+			System.out.println("Erreur d'exécution de la requête SQL : " + ex);
 		}
 	}
 

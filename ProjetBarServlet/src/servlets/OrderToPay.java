@@ -3,46 +3,49 @@ package servlets;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import java.util.Hashtable;
 import controleur.EjbLocator;
 import ejbs.*;
 import dtos.*;
 
 /**
- * Servlet implementation class SetOrderReady
+ * Servlet implementation class OrderToPay
  */
-@WebServlet("/SetOrderReady")
-public class SetOrderReady extends HttpServlet {
+@WebServlet("/OrderToPay")
+public class OrderToPay extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetOrderReady() {
+    public OrderToPay() {
         super();
         // TODO Auto-generated constructor stub
     }
 
 	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+
+	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		OrderManagerStatelessRemote orderManager = null;
-		StateManagerStatelessRemote stateManager = null;
+		TableManagerStatelessRemote tableManager = null;
 		Context context;
     	final Hashtable jndiProperties = new Hashtable();
     	jndiProperties.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
-    	OrderDto order = null;
-    	StateDto state = null;
+    	TablesDto table = null;
     	int tableId = 0;
     	
     	try {
@@ -53,26 +56,20 @@ public class SetOrderReady extends HttpServlet {
 			ObjectInputStream fluxentree = new ObjectInputStream(request.getInputStream());
 
 			// Récupération du résultat de la requête
-			order = (OrderDto)fluxentree.readObject();
-			orderManager = EjbLocator.getLocator().getOrderManager();  
-			stateManager = EjbLocator.getLocator().getStateManager();
+			tableId = (int)fluxentree.readObject();
+			tableManager = EjbLocator.getLocator().getTableManager();
 			
-			if (stateManager != null) {
-				state = stateManager.getState(2);
-				order.setOrderState(state);
-			}
-			
-			if (orderManager != null) {
-				order = orderManager.editOrder(order);
-			}else {
-				System.out.println("Servlet 'SetOrderReady' - orderManager is null");				
+			if (tableManager != null) {
+				table = tableManager.getOrderToPayByTableId(tableId);
+			} else {
+				System.out.println("Servlet 'OrderToPay' - tableManager is null");				
 			}
 	    	
 			// Préparation du flux de sortie
 			ObjectOutputStream sortie=new ObjectOutputStream(response.getOutputStream());
 
 			// Envoi du résultat au client
-			sortie.writeObject(order);
+			sortie.writeObject(table);
 		} catch (Exception ex) {
 				System.out.println("Erreur d'exécution de la requête SQL : " + ex);
 		}

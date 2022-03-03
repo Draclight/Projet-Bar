@@ -44,5 +44,13 @@ public class EjbLocator {
 		return getEjb(StateManagerStatelessRemote.class, "StateManagerStateless");
 	}
 	
+	public DrinkManagerStatelessRemote getDrinkManager() {
+		return getEjb(DrinkManagerStatelessRemote.class, "DrinkManagerStateless");
+	}
+	
+	public BillManagerStatelessRemote getBillManager() {
+		return getEjb(BillManagerStatelessRemote.class, "BillManagerStateless");
+	}
+	
 // Rajouter ici une méthode pour tout nouvel EJB auquel on souhaite accéder
 }

@@ -57,10 +57,18 @@ public class TablesDto implements Serializable{
 		return isEmpty;
 	}
 
+	public boolean getIsEmpty() {
+		return isEmpty;
+	}
+	
 	public boolean isBooked() {
 		return isBooked;
 	}
 
+	public boolean getIsBooked() {
+		return isBooked;
+	}
+	
 	public void setBooked(boolean isBooked) {
 		this.isBooked = isBooked;
 	}

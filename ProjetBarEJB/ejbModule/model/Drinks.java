@@ -1,8 +1,7 @@
-package dtos;
+package model;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,25 +9,27 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-public class DrinkDto implements Serializable {
+@Entity
+@Table(name = "Drinks")
+public class Drinks implements Serializable {
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO) 
     private int drinkId;
 	private String drinkName;
 	private double drinkPrice;
 	private int drinkQuantity;
-	private int drinkOrderedQuantity;
-	private List<OrderDto> ordersOfDrink;
+
+	public Drinks() { }
 	
-	public DrinkDto() { }
-	
-	public DrinkDto(int drinkId, String drinkName, double drinkPrice, int drinkQuantity, List<OrderDto> ordersOfDrink) {
+	public Drinks(int drinkId, String drinkName, double drinkPrice, int drinkQuantity) {
 		this.drinkId = drinkId;
 		this.drinkName = drinkName;
 		this.drinkPrice = drinkPrice;
 		this.drinkQuantity = drinkQuantity;
-		this.ordersOfDrink = ordersOfDrink;
 	}
 
 	public int getDrinkId() {
@@ -59,23 +60,19 @@ public class DrinkDto implements Serializable {
 		return drinkQuantity;
 	}
 	
-	public void setDrinkQuantity(int drinkQuantity) {
-		this.drinkQuantity = drinkQuantity;
+	public void setDrinkQuanity(int qty) {
+		this.drinkQuantity = qty;
 	}
+	
+	@ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER, mappedBy = "drinksOfOrder")
+	private Set<Order> ordersOfDrink = new HashSet<Order>();
 
-	public int getDrinkOrderedQuantity() {
-		return drinkOrderedQuantity;
-	}
-	
-	public void setDrinkOrderedQuantity(int drinkOrderedQuantity) {
-		this.drinkOrderedQuantity = drinkOrderedQuantity;
-	}
-	
-	public List<OrderDto> getOrdersOfDrink() {
+	public Set<Order> getOrdersOfDrink() {
 		return ordersOfDrink;
 	}
 
-	public void setOrdersOfDrink(List<OrderDto> ordersOfDrink) {
+	public void setOrdersOfDrink(Set<Order> ordersOfDrink) {
 		this.ordersOfDrink = ordersOfDrink;
 	}
+	
 }

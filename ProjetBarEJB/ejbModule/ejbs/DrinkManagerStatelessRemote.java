@@ -1,14 +1,16 @@
 package ejbs;
 
 import java.util.Collection;
-import javax.ejb.Remote;
-import model.Drink;
+import java.util.List;
 
+import javax.ejb.Remote;
+import model.*;
+import dtos.*;
 @Remote
 public interface DrinkManagerStatelessRemote {
 
-	public Drink addDrink(Drink drink);
-	public Drink getDrink(int drinkId);
-	public Collection<Drink> getDrinksList();
-	public Drink editDrink(Drink drink);
+	public Drinks addDrink(Drinks drink);
+	public Drinks getDrink(int drinkId);
+	public List<DrinkDto> getDrinksList();
+	public DrinkDto editDrink(DrinkDto drink);
 }

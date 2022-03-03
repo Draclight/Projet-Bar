@@ -6,6 +6,7 @@
 		<project>ProjetBarEJB</project>
 		<project>ProjetBarServlet</project>
 		<project>ProjetBarWebTest</project>
+		<project>ProjetBarWeb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -5,18 +5,14 @@ import java.util.Hashtable;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import ejbs.OrderManagerStatelessRemote;
-import ejbs.TableManagerStatelessRemote;
-import model.ModuleManagerRemote;
+import ejbs.*;
+import dtos.*;
 
 public class EjbLocator {
 	private static Context ctx;
 	private static EjbLocator instance = new EjbLocator();
-
 	private EjbLocator() {
 	}
-
 	public static EjbLocator getLocator() {
 		return instance;
 	}
@@ -29,6 +25,7 @@ public class EjbLocator {
 			final String appName = "ProjetBarComplet";
 			final String moduleName = "ProjetBarEJB";
 			return (T) context.lookup("java:global/" + appName + "/" + moduleName + "/" + beanName + "!" + ejbClass.getName());
+			//return (T)context.lookup("java:global/ProjetBarComplet/ProjetBarEJB/OrderManagerStatelessRemote!ejbs.OrderManagerStatelessRemote");			
 		} catch (NamingException e) {
 			return null;
 		}
@@ -41,7 +38,10 @@ public class EjbLocator {
 	public OrderManagerStatelessRemote getOrderManager() {
 		return getEjb(OrderManagerStatelessRemote.class, "OrderManagerStateless");
 	}
-	
+
+	public StateManagerStatelessRemote getStateManager() {
+		return getEjb(StateManagerStatelessRemote.class, "StateManagerStateless");
+	}
 	public DrinkManagerStatelessRemote getDrinkManager() {
 		return getEjb(DrinkManagerStatelessRemote.class, "DrinkManagerStateless");
 	}

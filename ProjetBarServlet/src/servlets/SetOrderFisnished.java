@@ -14,23 +14,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import controleur.EjbLocator;
-import ejbs.*;
-import dtos.*;
+import dtos.OrderDto;
+import dtos.StateDto;
+import ejbs.OrderManagerStatelessRemote;
+import ejbs.StateManagerStatelessRemote;
 
 /**
- * Servlet implementation class SetOrderReady
+ * Servlet implementation class SetOrderFisnished
  */
-@WebServlet("/SetOrderReady")
-public class SetOrderReady extends HttpServlet {
+@WebServlet("/SetOrderFisnished")
+public class SetOrderFisnished extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public SetOrderReady() {
+    public SetOrderFisnished() {
         super();
         // TODO Auto-generated constructor stub
     }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -58,14 +66,14 @@ public class SetOrderReady extends HttpServlet {
 			stateManager = EjbLocator.getLocator().getStateManager();
 			
 			if (stateManager != null) {
-				state = stateManager.getState(2);
+				state = stateManager.getState(4);
 				order.setOrderState(state);
 			}
 			
 			if (orderManager != null) {
 				order = orderManager.editOrder(order);
 			}else {
-				System.out.println("Servlet 'SetOrderReady' - orderManager is null");				
+				System.out.println("Servlet 'OrderToPay' - tableManager is null");				
 			}
 	    	
 			// Préparation du flux de sortie

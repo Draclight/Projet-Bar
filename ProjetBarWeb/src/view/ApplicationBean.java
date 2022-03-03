@@ -1,5 +1,6 @@
 package view;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Collection;
@@ -9,14 +10,16 @@ import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import controleur.EjbLocator;
-import model.TableManagerRemote;
-import model.Tables;
+import dtos.*;
+import ejbs.*;
 
 @Named("applicationBean")
 @ApplicationScoped
 public class ApplicationBean implements Serializable {
-	private TableManagerRemote tableManager;
-	private Collection<model.Tables> lesTables = null;
+	private TableManagerStatelessRemote tableManager;
+	private OrderManagerStatelessRemote orderManager;
+	private StateManagerStatelessRemote stateManager;
+	private Collection<TablesDto> lesTables = null;
 	
 	public ApplicationBean()
 	{
@@ -25,29 +28,39 @@ public class ApplicationBean implements Serializable {
 
 	public void updateTables()
 	{	
-		System.out.println("Récupération du tableManager");
+		System.out.println("Récupération du moduleManager");
 		tableManager = EjbLocator.getLocator().getTableManager();
-		
 		if(tableManager != null)
 		{
-			System.out.println("tableManager récup");
-			lesTables = tableManager.getTablesList();			
-		}else {
-			System.out.println("tableManager non récup");
+			lesTables = tableManager.getTablesList();		
 		}
 	}
 
-	public Collection<model.Tables> getLesModules() 
+	public Collection<TablesDto> getLesTables() 
 	{
 		return lesTables;
 	}
 
-	public void setLesModules(Collection<model.Tables> lesTables) 
+	public void setLesTables(Collection<TablesDto> lesTables) 
 	{
 		this.lesTables = lesTables;
 	}
 	
-	public void nouvelleCommande(int tableId) {
+	public void orderDelivered(int tableId) {
+		tableManager = EjbLocator.getLocator().getTableManager();
+		orderManager = EjbLocator.getLocator().getOrderManager();
+		stateManager = EjbLocator.getLocator().getStateManager();
+		OrderDto order = null;
+		StateDto state = null;
+		TablesDto table = tableManager.getTable(tableId);
+		if (table != null) {
+			order = table.getOrdersOfTable().stream().filter(o -> o.getOrderState().getStateId() == 2).findFirst().orElse(null);
+		}
 		
+		if(order != null) {
+			state = stateManager.getState(3);
+			order.setOrderState(state);
+			orderManager.editOrder(order);
+		}
 	}
 }
